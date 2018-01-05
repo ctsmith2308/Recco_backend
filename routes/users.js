@@ -25,7 +25,6 @@ router.get('/:id', function(req, res, next){
   admin.auth().verifyIdToken(idToken)
   .then((decodedToken) => {
     let uid = decodedToken.uid;
-    console.log('this is the decoded uid', uid)
   //     knex('users')
   //     .select('username')
   //     .where('id', id)
@@ -39,11 +38,20 @@ router.get('/:id', function(req, res, next){
 })
 /* POST new user. */
 router.post('/', function(req, res, next){
-  knex('users')
-  .insert(req.body,"*")
-  .then((newUser) => {
-    res.send(newUser)
-  })
+  // console.log('this is the hashed token', req.body.token);
+  // console.log('this is the users email', req.body.email);
+  admin.auth().verifyIdToken(req.body.token)
+  .then((decodedToken)=> {
+    var uid = decodedToken.uid;
+    console.log('this is the decoded token', uid);
+  }).catch(function(error) {
+    console.log('nope you got an error', error);
+  });
+  // knex('users')
+  // .insert(req.body,"*")
+  // .then((newUser) => {
+  //   res.send(newUser)
+  // })
 })
 /* DELETE user */
 router.delete('/:id', function(req, res, next) {
