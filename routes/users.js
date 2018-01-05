@@ -25,16 +25,15 @@ router.get('/:id', function(req, res, next){
   admin.auth().verifyIdToken(idToken)
   .then((decodedToken) => {
     let uid = decodedToken.uid;
-      // knex('users')
-      // .select('id')
-      // .where('uid', uid)
-      // .then((data) => {
-      //   res.send(data)
-      // })
+      knex('users')
+      .select('id')
+      .where('uid', uid)
+      .then((data) => {
+        res.send('this is the UID', data[0].id)
+      })
     }).catch(function(error) {
     console.log('backend error', error);
   })
-
 })
 /* POST new user. */
 router.post('/', function(req, res, next){
