@@ -22,17 +22,18 @@ router.get('/', function(req, res, next) {
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next){
   let idToken = req.params.id
-  admin.auth().verifyIdToken(idToken)
+  admin.auth().verifyIdToken(req.params.id)
   .then((decodedToken) => {
     let uid = decodedToken.uid;
       knex('users')
       .select('id')
-      .where('uid', uid)
+      .where('uid', decodedToken.uid)
       .then((data) => {
-        res.send('this is the UID', data[0].id)
+        let userID = { user_id: data[0].id }
+        res.send(userID)
       })
     }).catch(function(error) {
-    console.log('backend error', error);
+      res.send(error)
   })
 })
 /* POST new user. */
