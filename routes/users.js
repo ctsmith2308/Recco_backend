@@ -1,6 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var knex = require('../knex')
+let express = require('express');
+let router = express.Router();
+let knex = require('../knex')
+let admin = require("firebase-admin");
+let url = require('../config')
+
+let serviceAccount = require("../manager.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: url
+});
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -12,13 +21,21 @@ router.get('/', function(req, res, next) {
 });
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next){
-  let id = req.params.id
-  knex('users')
-  .select('username')
-  .where('id', id)
-  .then((data) => {
-    res.send(data)
+  let idToken = req.params.id
+  admin.auth().verifyIdToken(idToken)
+  .then((decodedToken) => {
+    let uid = decodedToken.uid;
+    console.log('this is the decoded uid', uid)
+  //     knex('users')
+  //     .select('username')
+  //     .where('id', id)
+  //     .then((data) => {
+  //       res.send(data)
+  //     })
+  //   }).catch(function(error) {
+  //   console.log('backend error', error);
   })
+
 })
 /* POST new user. */
 router.post('/', function(req, res, next){
