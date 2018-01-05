@@ -25,33 +25,35 @@ router.get('/:id', function(req, res, next){
   admin.auth().verifyIdToken(idToken)
   .then((decodedToken) => {
     let uid = decodedToken.uid;
-  //     knex('users')
-  //     .select('username')
-  //     .where('id', id)
-  //     .then((data) => {
-  //       res.send(data)
-  //     })
-  //   }).catch(function(error) {
-  //   console.log('backend error', error);
+      // knex('users')
+      // .select('id')
+      // .where('uid', uid)
+      // .then((data) => {
+      //   res.send(data)
+      // })
+    }).catch(function(error) {
+    console.log('backend error', error);
   })
 
 })
 /* POST new user. */
 router.post('/', function(req, res, next){
-  // console.log('this is the hashed token', req.body.token);
-  // console.log('this is the users email', req.body.email);
   admin.auth().verifyIdToken(req.body.token)
   .then((decodedToken)=> {
-    var uid = decodedToken.uid;
-    console.log('this is the decoded token', uid);
+    let uid = decodedToken.uid;
+    let newUser = {
+      email:req.body.email,
+      uid
+    }
+    knex('users')
+    .insert(newUser, "*")
+    .then((newUser) => {
+      res.send(newUser)
+    })
   }).catch(function(error) {
     console.log('nope you got an error', error);
   });
-  // knex('users')
-  // .insert(req.body,"*")
-  // .then((newUser) => {
-  //   res.send(newUser)
-  // })
+
 })
 /* DELETE user */
 router.delete('/:id', function(req, res, next) {
