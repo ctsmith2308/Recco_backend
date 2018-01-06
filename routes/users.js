@@ -14,62 +14,62 @@ admin.initializeApp({
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   knex('users')
-  .select('*')
-  .then((data) => {
-    res.send(data)
-  })
+    .select('*')
+    .then((data) => {
+      res.send(data)
+    })
 });
 /* GET user based on ID. */
-router.get('/:id', function(req, res, next){
+router.get('/:id', function(req, res, next) {
   let idToken = req.params.id
   admin.auth().verifyIdToken(req.params.id)
-  .then((decodedToken) => {
-    let uid = decodedToken.uid;
+    .then((decodedToken) => {
+      let uid = decodedToken.uid;
       knex('users')
-      .select('id')
-      .where('uid', decodedToken.uid)
-      .then((data) => {
-        let userID = { user_id: data[0].id }
-        res.send(userID)
-      })
+        .select('id')
+        .where('uid', decodedToken.uid)
+        .then((data) => {
+          let userID = {
+            user_id: data[0].id
+          }
+          res.send(userID)
+        })
     }).catch(function(error) {
       res.send(error)
-  })
+    })
 })
 /* POST new user. */
-router.post('/', function(req, res, next){
+router.post('/', function(req, res, next) {
   admin.auth().verifyIdToken(req.body.token)
-  .then((decodedToken)=> {
-    let uid = decodedToken.uid;
-    let newUser = {
-      email:req.body.email,
-      uid
-    }
-    knex('users')
-    .insert(newUser, "*")
-    .then((newUser) => {
-      let userID = { user_id:newUser[0].id}
-      console.log('this is the new user', newUser);
-      res.send({userID})
-    })
-  }).catch(function(error) {
-    console.log('nope you got an error', error);
-  });
-
+    .then((decodedToken) => {
+      let uid = decodedToken.uid;
+      let newUser = {
+        email: req.body.email,
+        uid
+      }
+      knex('users')
+        .insert(newUser, "*")
+        .then((newUser) => {
+          let userID = {
+            user_id: newUser[0].id
+          }
+          res.send(userID)
+        })
+    }).catch(function(error) {});
 })
 /* DELETE user */
 router.delete('/:id', function(req, res, next) {
   const id = req.params.id
   knex('users')
-  .del()
-  .where('id', id)
-  .then((data) => {
-    let deletedUser = {
-      username: data.username,
-      hashedToken: data.hashed_token
-    }
-    res.send(deletedUser)
-  })
+    .del()
+    .where('id', id)
+    .then((data) => {
+      let deletedUser = {
+        username: data.username,
+        hashedToken: data.hashed_token
+      }
+      res.send(deletedUser)
+    })
 })
 
 
