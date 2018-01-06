@@ -48,7 +48,9 @@ router.post('/', function(req, res, next){
     knex('users')
     .insert(newUser, "*")
     .then((newUser) => {
-      res.send(newUser)
+      let userID = { user_id:newUser[0].id}
+      console.log('this is the new user', newUser);
+      res.send({userID})
     })
   }).catch(function(error) {
     console.log('nope you got an error', error);
