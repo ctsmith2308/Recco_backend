@@ -30,7 +30,8 @@ router.get('/:id', function(req, res, next) {
         .where('uid', decodedToken.uid)
         .then((data) => {
           let userID = {
-            user_id: data[0].id
+            user_id: data[0].id,
+            userToken: req.params.id
           }
           res.send(userID)
         })
@@ -51,7 +52,8 @@ router.post('/', function(req, res, next) {
         .insert(newUser, "*")
         .then((newUser) => {
           let userID = {
-            user_id: newUser[0].id
+            user_id: newUser[0].id,
+            userToken: req.body.token
           }
           res.send(userID)
         })
