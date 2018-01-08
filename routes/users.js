@@ -56,16 +56,74 @@ router.post('/', function(req, res, next) {
           }
           res.send(userID)
         })
-    }).catch(function(error) {});
+    }).catch((error)=>{
+      console.log(error);
+    });
 })
+
+let noUserInfo = (id, username, bio, res) => {
+  console.log('log from noUserInfo ===> ', id, user, bio);
+
+  let profileInfo = {
+    username,
+    bio,
+    user_id: id
+  }
+  
+  knex('dashboard')
+  .insert(profileInfo, '*')
+  .then((data) => {
+    res.send(data[0])
+  })
+}
+
+let hasUserInfo = (id, username, bio, res) => {
+  console.log('log from hasUserInfo ===> ', id, username, bio);
+  let newProfileInfo = {
+    username,
+    bio
+  }
+    knex('dashboard')
+    .where('user_id', id)
+    .update(newProfileInfo)
+    .then((data) => {
+      res.send(data[0])
+    })
+}
+
+let userLog = (id, username, bio, res) => {
+  console.log('log from userLog ===>', id, username, bio);
+
+    knex('dashboard')
+    .select('user_id', id)
+    .then((data) => {
+      console.log('I made it into the knex call inside userLog');
+        if(data.length === 0){
+          // function that inserts bio and username and returns PK
+          console.log('data length === 0');
+          noUserInfo(id, username, bio, res)
+        } else {
+          //function that updates bio and username and returns PK
+          console.log('data length > 0');
+          hasUserInfo(id, username, bio, res)
+        }
+    })
+}
 
 /* Post username and bio */
 router.post('/username', function (req, res, next){
-  let {id , token, username, bio } = req.body
-  console.log('this is the req from the front end', token);
+  let { token, id, username, bio } = req.body
     admin.auth().verifyIdToken(token)
-    .then((decodedToken)=>{
-      console.log('decoded uid====>', decodedToken.uid);
+    .then((decodedToken) => {
+      knex('users')
+      .where('uid', decodedToken.uid )
+      .select('id')
+      .then((returningId) => {
+        if(returningId[0].id === id){
+          console.log('hitting if conditional to fire userLog function');
+          userLog(id, username, bio, res)
+        }
+      })
     })
 })
 /* DELETE user */
