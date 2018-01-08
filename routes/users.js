@@ -3,9 +3,8 @@ let router = express.Router();
 let knex = require('../knex')
 let admin = require("firebase-admin");
 let url = require('../config')
-
 let serviceAccount = require("../manager.json");
-
+//
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: url
@@ -58,6 +57,16 @@ router.post('/', function(req, res, next) {
           res.send(userID)
         })
     }).catch(function(error) {});
+})
+
+/* Post username and bio */
+router.post('/username', function (req, res, next){
+  let {id , token, username, bio } = req.body
+  console.log('this is the req from the front end', token);
+    admin.auth().verifyIdToken(token)
+    .then((decodedToken)=>{
+      console.log('decoded uid====>', decodedToken.uid);
+    })
 })
 /* DELETE user */
 router.delete('/:id', function(req, res, next) {

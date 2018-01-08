@@ -9,9 +9,22 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var restaurants = require('./routes/restaurants')
 var favorites = require('./routes/favorites')
-var dashboard = require('./routes/dashboard')
+// var dashboard = require('./routes/dashboard')
 
 var app = express();
+//firebase stuff
+// let admin = require("firebase-admin");
+// let url = require('./config')
+//
+// let serviceAccount = require("./manager.json");
+//
+// app.use(()=>{
+//   console.log('im using the initializeApp');
+//   admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: url
+//   })
+// })
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +42,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/restaurants', restaurants)
 app.use('/favorites', favorites)
-app.use('/dashboard', dashboard)
+// app.use('/dashboard', dashboard)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
