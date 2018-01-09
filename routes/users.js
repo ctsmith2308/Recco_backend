@@ -62,14 +62,13 @@ router.post('/', function(req, res, next) {
 })
 
 let noUserInfo = (id, username, bio, res) => {
-  console.log('log from noUserInfo ===> ', id, user, bio);
-
+  console.log('log from noUserInfo ===> ', id, username, bio);
   let profileInfo = {
     username,
     bio,
     user_id: id
   }
-  
+
   knex('dashboard')
   .insert(profileInfo, '*')
   .then((data) => {
