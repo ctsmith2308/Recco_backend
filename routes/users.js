@@ -94,7 +94,8 @@ let userLog = (id, username, bio, res) => {
   console.log('log from userLog ===>', id, username, bio);
 
     knex('dashboard')
-    .select('user_id', id)
+    .select('user_id')
+    .where('user_id', id)
     .then((data) => {
       console.log('I made it into the knex call inside userLog');
         if(data.length === 0){
