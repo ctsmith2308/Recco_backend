@@ -21,22 +21,17 @@ router.get('/', function(req, res, next) {
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next) {
   let idToken = req.params.id
-  console.log(idToken);
   admin.auth().verifyIdToken(req.params.id)
     .then((decodedToken) => {
-      console.log('here is the decodedToken', decodedToken);
       let uid = decodedToken.uid;
-      console.log('here it is again', uid);
       knex('users')
         .select('id')
         .where('uid', decodedToken.uid)
         .then((data) => {
-          console.log('here is the data', data[0]);
           let userID = {
             user_id: data[0].id,
             userToken: req.params.id
           }
-          console.log(userID);
           res.send(userID)
         })
     }).catch(function(error) {
@@ -66,12 +61,11 @@ router.post('/', function(req, res, next) {
     });
 })
 
-let noUserInfo = (id, username, bio, res) => {
-  console.log('log from noUserInfo ===> ', id, username, bio);
+let noUserInfo = (userID, username, bio, res) => {
   let profileInfo = {
     username,
     bio,
-    user_id: id
+    user_id: userID
   }
 
   knex('dashboard')
@@ -81,52 +75,47 @@ let noUserInfo = (id, username, bio, res) => {
   })
 }
 
-let hasUserInfo = (id, username, bio, res) => {
-  console.log('log from hasUserInfo ===> ', id, username, bio);
+let hasUserInfo = (userID, username, bio, res) => {
   let newProfileInfo = {
     username,
     bio
   }
     knex('dashboard')
-    .where('user_id', id)
+    .where('user_id', userID)
     .update(newProfileInfo)
     .then((data) => {
       res.send(data[0])
     })
 }
 
-let userLog = (id, username, bio, res) => {
-  console.log('log from userLog ===>', id, username, bio);
+let userLog = (userID, username, bio, res) => {
 
     knex('dashboard')
     .select('user_id')
-    .where('user_id', id)
+    .where('user_id', userID)
     .then((data) => {
-      console.log('I made it into the knex call inside userLog');
         if(data.length === 0){
           // function that inserts bio and username and returns PK
-          console.log('data length === 0');
-          noUserInfo(id, username, bio, res)
+          noUserInfo(userID, username, bio, res)
         } else {
           //function that updates bio and username and returns PK
-          console.log('data length > 0');
-          hasUserInfo(id, username, bio, res)
+          hasUserInfo(userID, username, bio, res)
         }
     })
 }
 
 /* Post username and bio */
 router.post('/username', function (req, res, next){
-  let { token, id, username, bio } = req.body
+  //passes here
+  let { token, userID, username, bio } = req.body
     admin.auth().verifyIdToken(token)
     .then((decodedToken) => {
       knex('users')
       .where('uid', decodedToken.uid )
       .select('id')
       .then((returningId) => {
-        if(returningId[0].id === id){
-          console.log('hitting if conditional to fire userLog function');
-          userLog(id, username, bio, res)
+        if(returningId[0].id === userID){
+          userLog(userID, username, bio, res)
         }
       })
     })
