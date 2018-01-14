@@ -21,13 +21,16 @@ router.get('/', function(req, res, next) {
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next) {
   let idToken = req.params.id
+  console.log('here is the backend token', idToken)
   admin.auth().verifyIdToken(req.params.id)
     .then((decodedToken) => {
       let uid = decodedToken.uid;
+      console.log('here is the uid', uid);
       knex('users')
         .select('id')
         .where('uid', decodedToken.uid)
         .then((data) => {
+          console.log('here is the data', data[0]);
           let userID = {
             user_id: data[0].id,
             userToken: req.params.id
@@ -40,6 +43,7 @@ router.get('/:id', function(req, res, next) {
 })
 /* POST new user. */
 router.post('/', function(req, res, next) {
+  console.log('i was tagged');
   admin.auth().verifyIdToken(req.body.token)
     .then((decodedToken) => {
       let uid = decodedToken.uid;

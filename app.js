@@ -12,6 +12,7 @@ var favorites = require('./routes/favorites')
 var dashboard = require('./routes/dashboard')
 var photos = require('./routes/photos')
 var reviews = require('./routes/reviews')
+var friends = require('./routes/friends')
 
 var app = express();
 //firebase stuff
@@ -47,6 +48,7 @@ app.use('/favorites', favorites)
 app.use('/dashboard', dashboard)
 app.use('/photos', photos)
 app.use('/reviews', reviews)
+app.use('/friends', friends)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
