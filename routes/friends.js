@@ -3,8 +3,13 @@ let router = express.Router()
 let knex = require('../knex')
 
 router.get('/:id', function(req, res, next){
-  console.log('current user from get', req.params.id);
-  
+  knex('friends')
+  .select('dashboard.bio','dashboard.username')
+  .where('friends.user_id', req.params.id)
+  .join('dashboard','friends.friend_id','dashboard.user_id')
+  .then((res)=>{
+    console.log('here is the res', res);
+  })
 })
 
 
