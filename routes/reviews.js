@@ -4,7 +4,7 @@ let router = express.Router()
 
 
 router.get('/:id', function(req, res, next){
-  console.log(req.params.id);
+  console.log('here is the foodies id' , req.params.id);
   knex('reviews')
   .select('*')
   .where('user_id', req.params.id)
@@ -12,7 +12,7 @@ router.get('/:id', function(req, res, next){
     // let resBody = {
     //   userReview: res[0].user_review,
     // }
-    console.log(resBody);
+    console.log(response);
     // res.send(response)
   })
 })
