@@ -14,7 +14,7 @@ let knex = require('../knex')
 
 router.get('/', function(req, res, next){
   knex('dashboard')
-  .select('username','user_id')
+  .select('username','bio','user_id')
   .then(data=>{
     res.send(data)
   })

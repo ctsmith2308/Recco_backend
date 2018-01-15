@@ -21,7 +21,6 @@ router.post('/', function(req, res, next){
   knex('friends')
   .insert(postBody)
   .then((data)=>{
-    console.log('success');
     res.sendStatus(200)
   })
 })

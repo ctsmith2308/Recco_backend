@@ -17,7 +17,8 @@ router.get('/', function(req, res, next) {
     .then((data) => {
       res.send(data)
     })
-});
+})
+
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next) {
   let idToken = req.params.id

@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var restaurants = require('./routes/restaurants')
 var favorites = require('./routes/favorites')
 var dashboard = require('./routes/dashboard')
 var photos = require('./routes/photos')
@@ -43,7 +42,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/restaurants', restaurants)
 app.use('/favorites', favorites)
 app.use('/dashboard', dashboard)
 app.use('/photos', photos)
