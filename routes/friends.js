@@ -4,14 +4,13 @@ let knex = require('../knex')
 
 router.get('/:id', function(req, res, next){
   knex('friends')
-  .select('dashboard.bio','dashboard.username')
+  .select('dashboard.user_id','dashboard.bio','dashboard.username')
   .where('friends.user_id', req.params.id)
   .join('dashboard','friends.friend_id','dashboard.user_id')
-  .then((res)=>{
-    console.log('here is the res', res);
+  .then((response)=>{
+    res.send(response)
   })
 })
-
 
 router.post('/', function(req, res, next){
   let { userID, friendID } = req.body
@@ -23,6 +22,7 @@ router.post('/', function(req, res, next){
   .insert(postBody)
   .then((data)=>{
     console.log('success');
+    res.sendStatus(200)
   })
 })
 

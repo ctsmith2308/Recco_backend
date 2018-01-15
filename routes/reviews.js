@@ -6,12 +6,11 @@ let router = express.Router()
 router.get('/:id', function(req, res, next){
   console.log(req.params.id);
   knex('reviews')
-  .select('user_review','place_id')
+  .select('user_review')
   .where('user_id', req.params.id)
   .then((res)=>{
     let resBody = {
       userReview: res[0].user_review,
-      placdID: place_id
     }
     console.log(resBody);
     // res.send(resBody)
@@ -19,11 +18,10 @@ router.get('/:id', function(req, res, next){
 })
 
 router.post('/', function(req, res, next){
-  let { userID, userReview, placeID } = req.body
+  let { userID, userReview } = req.body
   let body = {
     user_id: userID,
     user_review: userReview,
-    place_id: placeID
   }
   knex('reviews')
   .insert(body)
