@@ -9,11 +9,7 @@ router.get('/:id', function(req, res, next){
   .select('*')
   .where('user_id', req.params.id)
   .then((response)=>{
-    // let resBody = {
-    //   userReview: res[0].user_review,
-    // }
-    console.log(response);
-    // res.send(response)
+    res.send(response)
   })
 })
 
