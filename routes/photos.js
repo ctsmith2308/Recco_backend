@@ -4,9 +4,6 @@ const knex = require('../knex')
 
 router.get('/:id', function (req, res, next){
   let id = req.params.id
-  // console.log('here is the id', id);
-  // // console.log('im the params ID', req.params.id);
-  // console.log('made it to the route');
   knex('photos')
   .select('image_url')
   .where('user_id', req.params.id)
