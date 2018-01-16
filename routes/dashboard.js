@@ -25,9 +25,11 @@ router.get('/', function(req, res, next){
 router.get('/:id', function(req, res, next){
   let userID = req.params.id
   knex('dashboard')
-  .select('username','bio')
-  .where('user_id', userID)
+  .join('photos','photos.user_id', 'dashboard.user_id')
+  .where('dashboard.user_id', userID)
+  .select('username','bio','image_url')
   .then((data)=>{
+    console.log('here is the data',data);
     res.send(data[0])
   })
 })
