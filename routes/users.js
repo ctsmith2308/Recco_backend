@@ -11,40 +11,38 @@ admin.initializeApp({
 });
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  knex('users')
-    .select('*')
-    .then((data) => {
-      res.send(data)
-    })
-})
+// router.get('/', function(req, res, next) {
+//   knex('users')
+//     .select('*')
+//     .then((data) => {
+//       res.send(data)
+//     })
+// })
 
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next) {
   let idToken = req.params.id
-  console.log('here is the backend token', idToken)
   admin.auth().verifyIdToken(req.params.id)
     .then((decodedToken) => {
       let uid = decodedToken.uid;
-      console.log('here is the uid', uid);
       knex('users')
-        .select('id')
+        .select('id','email')
         .where('uid', decodedToken.uid)
         .then((data) => {
-          console.log('here is the data', data[0]);
           let userID = {
             user_id: data[0].id,
+            email:data[0].email,
             userToken: req.params.id
           }
           res.send(userID)
         })
     }).catch(function(error) {
-      res.send(error)
+      res.send('access denied')
     })
 })
+
 /* POST new user. */
 router.post('/', function(req, res, next) {
-  console.log('i was tagged');
   admin.auth().verifyIdToken(req.body.token)
     .then((decodedToken) => {
       let uid = decodedToken.uid;
@@ -57,6 +55,7 @@ router.post('/', function(req, res, next) {
         .then((newUser) => {
           let userID = {
             user_id: newUser[0].id,
+            email:newUser[0].email,
             userToken: req.body.token
           }
           res.send(userID)
@@ -66,13 +65,13 @@ router.post('/', function(req, res, next) {
     });
 })
 
-let noUserInfo = (userID, username, bio, res) => {
+let noUserInfo = (userID, username, bio, name, res) => {
   let profileInfo = {
     username,
     bio,
+    name,
     user_id: userID
   }
-
   knex('dashboard')
   .insert(profileInfo, '*')
   .then((data) => {
@@ -80,10 +79,11 @@ let noUserInfo = (userID, username, bio, res) => {
   })
 }
 
-let hasUserInfo = (userID, username, bio, res) => {
+let hasUserInfo = (userID, username, bio, name, res) => {
   let newProfileInfo = {
     username,
-    bio
+    bio,
+    name,
   }
     knex('dashboard')
     .where('user_id', userID)
@@ -91,28 +91,31 @@ let hasUserInfo = (userID, username, bio, res) => {
     .then((data) => {
       res.send(data[0])
     })
+    .catch((error)=>{
+      res.status(405).send(error)
+      console.log('this is the existing username error', error);
+    })
 }
 
-let userLog = (userID, username, bio, res) => {
-
+  let userLog = (userID, username, bio, name, res) => {
     knex('dashboard')
     .select('user_id')
     .where('user_id', userID)
     .then((data) => {
         if(data.length === 0){
           // function that inserts bio and username and returns PK
-          noUserInfo(userID, username, bio, res)
+          noUserInfo(userID, username, bio, name, res)
         } else {
-          //function that updates bio and username and returns PK
-          hasUserInfo(userID, username, bio, res)
+          //function that updates bio, username, name and returns PK
+          hasUserInfo(userID, username, bio, name, res)
         }
     })
-}
+  }
 
 /* Post username and bio */
 router.post('/username', function (req, res, next){
   //passes here
-  let { token, userID, username, bio } = req.body
+  let { token, userID, username, bio, name } = req.body
     admin.auth().verifyIdToken(token)
     .then((decodedToken) => {
       knex('users')
@@ -120,25 +123,26 @@ router.post('/username', function (req, res, next){
       .select('id')
       .then((returningId) => {
         if(returningId[0].id === userID){
-          userLog(userID, username, bio, res)
+          userLog(userID, username, bio, name, res)
         }
       })
     })
 })
+
 /* DELETE user */
-router.delete('/:id', function(req, res, next) {
-  const id = req.params.id
-  knex('users')
-    .del()
-    .where('id', id)
-    .then((data) => {
-      let deletedUser = {
-        username: data.username,
-        hashedToken: data.hashed_token
-      }
-      res.send(deletedUser)
-    })
-})
+// router.delete('/:id', function(req, res, next) {
+//   const id = req.params.id
+//   knex('users')
+//     .del()
+//     .where('id', id)
+//     .then((data) => {
+//       let deletedUser = {
+//         username: data.username,
+//         hashedToken: data.hashed_token
+//       }
+//       res.send(deletedUser)
+//     })
+// })
 
 
 module.exports = router;

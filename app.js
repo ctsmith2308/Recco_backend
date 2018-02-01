@@ -14,19 +14,7 @@ var reviews = require('./routes/reviews')
 var friends = require('./routes/friends')
 
 var app = express();
-//firebase stuff
-// let admin = require("firebase-admin");
-// let url = require('./config')
-//
-// let serviceAccount = require("./manager.json");
-//
-// app.use(()=>{
-//   console.log('im using the initializeApp');
-//   admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: url
-//   })
-// })
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

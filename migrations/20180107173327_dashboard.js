@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
     table.increments()
     table.string('username', 45).notNullable().unique()
     table.string('bio', 160).notNullable()
+    table.string('name', 100).notNullable()
     table.integer('user_id').notNullable().references('users.id').onDelete('CASCADE')
   })
 };

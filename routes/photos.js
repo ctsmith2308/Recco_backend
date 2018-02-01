@@ -8,23 +8,28 @@ router.get('/:id', function (req, res, next){
   .select('image_url')
   .where('user_id', req.params.id)
   .then((response)=>{
-    console.log('im the url', response[0]);
     res.send(response[0])
   })
 })
 
 router.post('/', function (req, res, next){
-  let { userID, url }= req.body
-  let postBody={
-    user_id:userID,
-    image_url: url
+  let tokenHeader = req.headers['x-access-token']
+  if(tokenHeader) {
+    let { userID, url } = req.body
+    let postBody={
+      user_id:userID,
+      image_url: url
+    }
+    knex('photos')
+    .insert(postBody)
+    .then((response)=>{
+      res.sendStatus(200)
+    })
+  } else {
+    return res.status(403).send({
+        message: 'Access Denied'
+    });
   }
-  knex('photos')
-  .insert(postBody)
-  .then((response)=>{
-    console.log(response);
-    res.sendStatus(200)
-  })
 })
 
 module.exports = router

@@ -4,7 +4,6 @@ let router = express.Router()
 
 
 router.get('/:id', function(req, res, next){
-  console.log('here is the foodies id' , req.params.id);
   knex('reviews')
   .select('*')
   .where('user_id', req.params.id)
