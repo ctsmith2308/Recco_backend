@@ -10,15 +10,6 @@ admin.initializeApp({
   databaseURL: url
 });
 
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   knex('users')
-//     .select('*')
-//     .then((data) => {
-//       res.send(data)
-//     })
-// })
-
 /* GET user based on ID. */
 router.get('/:id', function(req, res, next) {
   let idToken = req.params.id
@@ -93,7 +84,6 @@ let hasUserInfo = (userID, username, bio, name, res) => {
     })
     .catch((error)=>{
       res.status(405).send(error)
-      console.log('this is the existing username error', error);
     })
 }
 
