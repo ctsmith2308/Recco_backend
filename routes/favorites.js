@@ -2,24 +2,18 @@ let knex = require('../knex')
 let express = require('express')
 let router = express.Router()
 
-/* GET list of favorites */
-router.get('/', function(req, res, next){
-  knex('favorites')
-  .select('*')
-  .then((data) => {
-    res.send(data)
-  })
-  .catch((error) => {
-    res.send(error)
-  })
-})
 
+//
 /* GET list of favorites bases on user_id */
-router.get('/userfavorites', function(req, res, next){
+router.get('/:id', function(req, res, next){
+  let tokenHeader = req.headers['x-access-token']
+  console.log('here is the clicked user', req.params.id);
   knex('favorites')
-  .where('user_id', req.query.q)
-  .select('restaurant_id')
+  .where('favorites.user_id', req.params.id)
+  .join('dashboard', 'favorites.user_id','dashboard.user_id')
+  .select('dashboard.user_id','dashboard.username','dashboard.name','dashboard.bio','favorites.name','favorites.lat','favorites.long','favorites.website','favorites.phone_number','favorites.address')
   .then((data) => {
+    console.log('here is the data ===>', data);
     res.send(data)
   })
   .catch((error) => {
@@ -29,73 +23,33 @@ router.get('/userfavorites', function(req, res, next){
 
 /* POST new favorite */
 router.post('/', function(req, res, next){
-  knex('favorites')
-  .insert(req.body, "*")
-  .then((data) => {
-    res.send(data)
-  })
-  .catch((error)=>{
-    res.send(error)
-  })
-})
-/* DELETE favorite */
-// router.delete('/:id', function(req, res, next){
-//   console.log('here is the user id', req.params.id);
-//   // console.log('here is the rest id', req.params.restId);
-//
-//  // knex('favorites')
-//  //  .where({
-//  //    user_id: req.params.id,
-//  //    restaurant_id: req.params.restId
-//  //  })
-//  //  .del()
-//  //  .then((data)=>{
-//  //    res.send(data)
-//  //  })
-// })
-//
-// const deleteFavorite = (req,res,sendit)=>{
-//   if(!req.params.id) res.sendStatus(404)
-//   knex('favorites')
-//   .where({
-//     restaurant_id: req.params.id,
-//     user_id: req.params.userId
-//   })
-//   .del()
-//   .then(
-//     res.sendStatus(200))
-// }
-//
-// '/favorites/:id/:userId'
-
-router.delete('/:userId/:restaurantId', function(req, res, next){
-  knex('favorites')
-  .where({
-    user_id: req.params.userId,
-    restaurant_id: req.params.restaurantId
-  })
-  .del()
-  .then((data)=>{
-    res.send(data)
-  })
-  .catch((error)=>{
-    res.send(error)
-  })
+  let tokenHeader = req.headers['x-access-token']
+  if(tokenHeader){
+    let user_id = req.body.userID
+    let { name, phoneNumber, latitude, longitude, website, address } = req.body.locationInfo.coordinates
+    let postBody = {
+      user_id,
+      name,
+      address,
+      website,
+      phone_number:phoneNumber,
+      long:longitude,
+      lat: latitude
+    }
+    knex('favorites')
+    .insert(postBody, "*")
+    .then((data) => {
+      res.send(data)
+    })
+    .catch((error)=>{
+      res.send(error)
+    })
+  } else {
+    return res.status(403).send({
+      message:'Access Denied'
+    })
+  }
 })
 
-// router.delete('/', function(req, res, next){
-//   knex('favorites')
-//   .del()
-//   .where({
-//     user_id: req.query.user,
-//     restaurant_id: req.query.restaurant
-//   })
-//   .then((data) => {
-//     res.send(data)
-//   })
-//   .catch((error) => {
-//     res.send(error)
-//   })
-// })
 
 module.exports = router
