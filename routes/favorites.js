@@ -11,7 +11,8 @@ router.get('/:id', function(req, res, next){
   knex('favorites')
   .where('favorites.user_id', req.params.id)
   .join('dashboard', 'favorites.user_id','dashboard.user_id')
-  .select('dashboard.user_id','dashboard.username','dashboard.name','dashboard.bio','favorites.name','favorites.lat','favorites.long','favorites.website','favorites.phone_number','favorites.address')
+  .join('photos','favorites.user_id','photos.user_id')
+  .select('dashboard.user_id','dashboard.username','dashboard.name','dashboard.bio','favorites.name','favorites.lat','favorites.long','favorites.website','favorites.phone_number','favorites.address','photos.image_url')
   .then((data) => {
     console.log('here is the data ===>', data);
     res.send(data)
