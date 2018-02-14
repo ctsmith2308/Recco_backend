@@ -119,20 +119,4 @@ router.post('/username', function (req, res, next){
     })
 })
 
-/* DELETE user */
-// router.delete('/:id', function(req, res, next) {
-//   const id = req.params.id
-//   knex('users')
-//     .del()
-//     .where('id', id)
-//     .then((data) => {
-//       let deletedUser = {
-//         username: data.username,
-//         hashedToken: data.hashed_token
-//       }
-//       res.send(deletedUser)
-//     })
-// })
-
-
 module.exports = router;
