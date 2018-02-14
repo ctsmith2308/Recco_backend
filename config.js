@@ -1,1 +1,1 @@
-let dbURl = "https://recco-f3b3a.firebaseio.com"
+let dbURl = 'https://recco-f3b3a.firebaseio.com'
