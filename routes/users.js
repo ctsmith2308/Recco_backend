@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let knex = require('../knex')
 let admin = require("firebase-admin");
-let url = require('../config')
+let url = require('../configUrl')
 let serviceAccount = require("../manager.json");
 //
 admin.initializeApp({
